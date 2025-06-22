@@ -1,14 +1,13 @@
-# Use official Tomcat base image
+# Step 1: Build the WAR file using Maven
+FROM maven:3.9.4-eclipse-temurin-17 AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
+
+# Step 2: Use official Tomcat image and deploy the WAR
 FROM tomcat:9.0-jdk17
-
-# Remove default web apps
 RUN rm -rf /usr/local/tomcat/webapps/*
+COPY --from=build /app/target/*.war /usr/local/tomcat/webapps/ROOT.war
 
-# Copy your WAR file into the Tomcat webapps directory
-COPY app.war /usr/local/tomcat/webapps/ROOT.war
-
-# Expose Tomcat default port
 EXPOSE 8080
-
-# Start Tomcat server
 CMD ["catalina.sh", "run"]
