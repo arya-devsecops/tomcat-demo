@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tomcat-demo-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tomcat-demo
+  template:
+    metadata:
+      labels:
+        app: tomcat-demo
+    spec:
+      containers:
+      - name: tomcat-demo
+        image: containerregistry0559601.azurecr.io/tomcat-demo-app:dso
+        ports:
+        - containerPort: 8080
